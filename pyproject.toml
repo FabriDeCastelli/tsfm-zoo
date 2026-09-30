@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tsfm-zoo"
-version = "0.1.0"
+version = "0.2.0"
 description = "Pretrained time-series foundation models behind one interface"
 requires-python = ">=3.12,<3.13"
 dependencies = [
@@ -35,6 +35,9 @@ legacy = [
     "datasets",
 ]
 
+# Temporal-graph datasets (private repo, needs GitHub SSH access): window embeddings and the PeMS evaluation.
+tgdata = ["tgdata"]
+
 [dependency-groups]
 dev = ["pytest>=8"]
 
@@ -46,6 +49,8 @@ torch = [
     { index = "pytorch-cu128", extra = "main" },
     { index = "pytorch-cu124", extra = "legacy" },
 ]
+
+tgdata = { git = "ssh://git@github.com/FabriDeCastelli/tgdata.git", tag = "v0.2.2", extra = "tgdata" }
 
 [[tool.uv.index]]
 name = "pytorch-cu128"

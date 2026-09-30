@@ -29,6 +29,7 @@ def model_class(family: str) -> type[TSFM]:
 def load_tsfm(family: str, variant: str | None = None, *, device, seed: int = 0,
               frozen: bool = True, **load_cfg) -> TSFM:
     model = model_class(family).from_pretrained(variant, seed=seed, device=device, **load_cfg)
+    model.spec = {"family": family, "variant": variant, "seed": seed, "load": load_cfg}
     if frozen:
         model.requires_grad_(False)
         model.eval()

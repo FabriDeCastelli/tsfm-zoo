@@ -48,6 +48,7 @@ class TSFM(nn.Module):
     embed_dim: int
     max_context: int
     patch_size: int | None
+    spec: dict | None = None  # what `load_tsfm` loaded (family, variant, seed, load options), for cache keys
 
     def __init__(self, seed: int = 0):
         super().__init__()

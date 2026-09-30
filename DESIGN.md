@@ -323,6 +323,22 @@ A model is done when:
 3. it has a README row (inputs used, what `z` is, limitations, training corpora);
 4. its patches are listed in `PATCHES.md`.
 
+## Window embeddings and the tgdata evaluation (v0.2.0)
+
+tgdata (FabriDeCastelli/tgdata, private, pinned tag v0.2.2) is the data and batching base for temporal
+graphs, behind the optional `tgdata` extra.
+
+- `embeddings.embed_windows(model, g, cache_dir, window=W)` follows tgdata's "every window of a series"
+  recipe (`split=None, horizon=0`) and writes `[windows, nodes, D]` with the tokens pooled (default
+  `model.summary`; a dataset with one channel per node). The nodes are the model's channels.
+- The cache directory name is the SHA-256 (`hashlib`) of the canonical JSON of the model
+  (family, variant, pinned checkpoint revision, seed, load options), the dataset (name, tgdata version,
+  shape, fingerprint of the readings), the window, normalisation, pooling, dtype and extra `encode`
+  inputs. Not the device or batch size. `config.json` holds it in full; runs are written to a temporary
+  directory and renamed, so a cache is complete or absent. `load_tsfm` records `model.spec` for this.
+- tgdata puts batches on the CUDA default device unless told otherwise; every call here passes
+  `device="cpu"` for the data, and only the model goes on the GPU chosen with `free-gpu`.
+
 ## Example
 `examples/compare.py --model chronos[:bolt-small] | all --dataset gifteval:<config> | etth1 --device auto [--save-z out.pt]`
 

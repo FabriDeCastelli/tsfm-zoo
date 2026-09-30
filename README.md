@@ -15,12 +15,16 @@ f = model(x, horizon=48)                         # Forecast: median [B, H, C], q
 
 | env | models | setup |
 |---|---|---|
-| `main` | chronos, timesfm, tirex, toto, flowstate, moment | `source .envrc && uv sync --extra main` |
+| `main` | chronos, timesfm, tirex, toto, flowstate, moment | `source .envrc && uv sync --extra main --extra tgdata` |
 | `legacy` | moirai, timer/sundial | `TSFM_ENV=legacy source .envrc && uv sync --extra legacy` |
 
 `legacy` exists because uni2ts pins gluonts 0.14 / torch 2.4, and
 the Timer/Sundial remote code breaks on transformers 5.
-`scripts/test_all.sh` runs the CPU tests in every env. `pytest -m repro` runs the GIFT-Eval reproduction on a free GPU.
+The `tgdata` extra adds [tgdata](https://github.com/FabriDeCastelli/tgdata) (private; needs GitHub SSH
+access and a Hugging Face login): the datasets for the window embeddings. `.envrc`
+points `TGDATA_ROOT` at the copy of the datasets already on this machine, so nothing is downloaded, and
+sets `HF_TOKEN_PATH` because `HF_HOME` hides the default token. TiRex-2 on GPU needs `scripts/setup_cuda.sh`
+once (a CUDA 12.8 compiler for its kernels). `scripts/test_all.sh` runs the CPU tests in every env. `pytest -m repro` runs the GIFT-Eval reproduction on a free GPU.
 
 ## Models
 
@@ -74,3 +78,36 @@ next to the model's leaderboard row.
 
 Chronos-2's leaderboard entry forecasts series jointly (cross-learning, 100
 series per group), so the reproduction puts them side by side in C.
+
+## Window embeddings
+
+`tsfm_zoo.embeddings.embed_windows(model, g, cache_dir, window=12)` embeds every window of a
+[tgdata](https://github.com/FabriDeCastelli/tgdata) dataset (`split=None, horizon=0`, as in tgdata's
+"every window of a series, in order") and saves `[windows, nodes, D]` to
+`<cache_dir>/<hash>/emb.npy`. Each window's tokens are pooled with `pool=` (default: the model's
+`summary`); the nodes are the model's channels, so a cross-channel model sees all of them together.
+The hash is the SHA-256 (`hashlib`, 16 hex characters) of the canonical JSON of everything that
+determines the result:
+
+- the model: family, variant, the pinned checkpoint revision, seed and load options;
+- the dataset: name, tgdata version, shape and a fingerprint of the readings;
+- the window length, normalisation, pooling, dtype and the extra `encode` inputs (such as `freq`).
+
+Device and batch size are not part of it. `config.json` next to the array holds the full
+configuration. A finished cache is reused without touching the model; a run is written under a
+temporary name and renamed when complete, so a cache is complete or absent.
+`cache.rows(task)` gives one embedding per sample of any split: `emb[task.window_starts]`.
+
+```python
+import tgdata
+from tsfm_zoo import load_tsfm
+from tsfm_zoo.embeddings import embed_windows
+
+g = tgdata.load("pems08")
+model = load_tsfm("flowstate", "r1.1", device="cuda:3")
+cache = embed_windows(model, g, "/raid/.../embeddings", window=12)      # [17845, 170, 512]
+train = cache.rows(g.task(split="train", device="cpu"))                 # one row per training sample
+```
+
+`python examples/embed_windows.py --model flowstate:r1.1 --dataset pems08 --window 12` does the same
+from the command line. Only datasets with one channel per node are supported (PeMS flow).

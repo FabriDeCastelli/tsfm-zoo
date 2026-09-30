@@ -2358,6 +2358,22 @@ wheels = [
 ]
 
 [[package]]
+name = "tgdata"
+version = "0.2.2"
+source = { git = "ssh://git@github.com/FabriDeCastelli/tgdata.git?tag=v0.2.2#717b7ebf4f3cd00305f0ece50723f805866bdbef" }
+dependencies = [
+    { name = "huggingface-hub", version = "0.36.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-tsfm-zoo-legacy'" },
+    { name = "huggingface-hub", version = "1.33.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-tsfm-zoo-main' or extra != 'extra-8-tsfm-zoo-legacy'" },
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-tsfm-zoo-legacy'" },
+    { name = "numpy", version = "2.5.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-tsfm-zoo-main' or extra != 'extra-8-tsfm-zoo-legacy'" },
+    { name = "pyarrow" },
+    { name = "torch", version = "2.4.1", source = { registry = "https://download.pytorch.org/whl/cu124" }, marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-8-tsfm-zoo-legacy') or (platform_machine != 'aarch64' and extra == 'extra-8-tsfm-zoo-legacy' and extra == 'extra-8-tsfm-zoo-main') or (platform_python_implementation != 'CPython' and extra == 'extra-8-tsfm-zoo-legacy' and extra == 'extra-8-tsfm-zoo-main') or (sys_platform != 'linux' and extra == 'extra-8-tsfm-zoo-legacy' and extra == 'extra-8-tsfm-zoo-main')" },
+    { name = "torch", version = "2.4.1", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-8-tsfm-zoo-legacy' and extra == 'extra-8-tsfm-zoo-main') or (extra != 'extra-8-tsfm-zoo-legacy' and extra != 'extra-8-tsfm-zoo-main')" },
+    { name = "torch", version = "2.4.1+cu124", source = { registry = "https://download.pytorch.org/whl/cu124" }, marker = "(platform_machine != 'aarch64' and extra == 'extra-8-tsfm-zoo-legacy') or (platform_python_implementation != 'CPython' and extra == 'extra-8-tsfm-zoo-legacy') or (sys_platform != 'linux' and extra == 'extra-8-tsfm-zoo-legacy') or (extra == 'extra-8-tsfm-zoo-legacy' and extra == 'extra-8-tsfm-zoo-main')" },
+    { name = "torch", version = "2.11.0+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "extra == 'extra-8-tsfm-zoo-main'" },
+]
+
+[[package]]
 name = "threadpoolctl"
 version = "3.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2748,7 +2764,7 @@ wheels = [
 
 [[package]]
 name = "tsfm-zoo"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "huggingface-hub", version = "0.36.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-tsfm-zoo-legacy'" },
@@ -2784,6 +2800,9 @@ main = [
     { name = "toto-2" },
     { name = "transformers", version = "5.17.0", source = { registry = "https://pypi.org/simple" } },
 ]
+tgdata = [
+    { name = "tgdata" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -2801,6 +2820,7 @@ requires-dist = [
     { name = "ninja", marker = "extra == 'main'" },
     { name = "numpy" },
     { name = "pandas", specifier = ">=2" },
+    { name = "tgdata", marker = "extra == 'tgdata'", git = "ssh://git@github.com/FabriDeCastelli/tgdata.git?tag=v0.2.2" },
     { name = "timesfm", extras = ["torch"], marker = "extra == 'main'", specifier = "==3.0.2" },
     { name = "tirex-2", marker = "extra == 'main'", specifier = "==0.3.0" },
     { name = "tirex-ts", marker = "extra == 'main'", specifier = "==1.4.2" },
@@ -2812,7 +2832,7 @@ requires-dist = [
     { name = "transformers", marker = "extra == 'main'", specifier = ">=4.57.6,<6" },
     { name = "uni2ts", marker = "extra == 'legacy'", specifier = "==2.0.0" },
 ]
-provides-extras = ["main", "legacy"]
+provides-extras = ["main", "legacy", "tgdata"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest", specifier = ">=8" }]
