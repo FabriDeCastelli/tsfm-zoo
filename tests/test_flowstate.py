@@ -36,3 +36,17 @@ def test_is_upstream_forward(flowstate):
                               batch_first=False)
         ref = out.quantile_outputs.squeeze(-1).transpose(-1, -2)[0].clamp(min=0.0)  # series is positive
         torch.testing.assert_close(f.quantiles[0, :, c], ref, rtol=0, atol=0)
+
+
+def test_series_with_too_little_data_do_not_crash(flowstate):
+    """Upstream fails on fewer than 2 usable steps; the wrapper forecasts those from an all-zero history."""
+    nan = float("nan")
+    x = torch.linspace(100, 120, 12)[None, :, None].repeat(1, 1, 4)
+    x[0, :11, 1] = nan                  # one observed step at the end
+    x[0, :, 2] = nan                    # all missing
+    x[0, ::4, 3] = nan                  # interior gaps: fine, upstream handles them
+    flowstate._warned.discard("short")
+    with pytest.warns(UserWarning, match="fewer than 2"):
+        f = flowstate(x, horizon=6, freq="5min")
+    assert f.median.shape == (1, 6, 4) and torch.isfinite(f.median).all()
+    assert (f.median[0, :, 0] > 50).all()                            # a normal series is unaffected

@@ -85,7 +85,11 @@ class FlowState(TSFM):
         series = []
         for r in rows:
             observed = ~np.isnan(r)
-            series.append(r[np.argmax(observed):][-context:] if observed.any() else np.zeros(1, np.float32))
+            usable = r[np.argmax(observed):][-context:] if observed.any() else r[:0]
+            if len(usable) < 2:  # upstream's discretization needs two steps
+                self.warn_once("short", "series with fewer than 2 usable steps are forecast from an all-zero history")
+                usable = np.zeros(2, np.float32)
+            series.append(usable)
         device = next(self.model.parameters()).device
         z = torch.empty(len(series), self.embed_dim)
         preds = torch.empty(len(series), H, len(self.native_levels))
