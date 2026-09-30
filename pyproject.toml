@@ -1,0 +1,70 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tsfm-zoo"
+version = "0.1.0"
+description = "Pretrained time-series foundation models behind one interface"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "torch",
+    "numpy",
+    "pandas>=2",
+    "huggingface-hub",
+]
+
+[project.optional-dependencies]
+main = [
+    "torch>=2.10,<2.12",
+    "transformers>=4.57.6,<6",
+    "chronos-forecasting==2.3.2",
+    "timesfm[torch]==3.0.2",
+    "tirex-ts==1.4.2",
+    "tirex-2==0.3.0",
+    "ninja",  # TiRex-2 JIT-builds its CUDA kernels (flashrnn) through torch.utils.cpp_extension
+    "toto-2==2.0.0",
+    "granite-tsfm==0.3.9",
+    "datasets",
+]
+legacy = [
+    "torch>=2.4,<2.5",
+    "uni2ts==2.0.0",
+    "gluonts[torch]==0.14.4",
+    "transformers==4.40.1",
+    "datasets",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.uv]
+conflicts = [[{ extra = "main" }, { extra = "legacy" }]]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cu128", extra = "main" },
+    { index = "pytorch-cu124", extra = "legacy" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tsfm_zoo"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-m 'not download and not repro and not dtdg'"
+markers = [
+    "download: fetches checkpoints or datasets",
+    "repro: reproduces published GIFT-Eval numbers (GPU)",
+    "dtdg: encodes nodes of a discrete-time dynamic graph",
+]

@@ -1,0 +1,192 @@
+# family.variant: HF repo pinned to a commit. The commit hash is the integrity
+# pin: HF content-addresses every file in a revision.
+
+[chronos.chronos-2]
+repo = "amazon/chronos-2"
+revision = "29ec3766d36d6f73f0696f85560a422f50e8498c"
+license = "Apache-2.0"
+
+[chronos.chronos-2-small]
+repo = "autogluon/chronos-2-small"
+revision = "ddec01313e50b6bc58ebaa92ede81bc24a3d9f9a"
+license = "Apache-2.0"
+
+[chronos.bolt-tiny]
+repo = "amazon/chronos-bolt-tiny"
+revision = "a0e552de83495b5c28c14c71c374f3e33280b340"
+license = "Apache-2.0"
+
+[chronos.bolt-mini]
+repo = "amazon/chronos-bolt-mini"
+revision = "251268337516a88e253628c43e1d26ec577b376b"
+license = "Apache-2.0"
+
+[chronos.bolt-small]
+repo = "amazon/chronos-bolt-small"
+revision = "772f3d25d38aec6d914c8949dab4462e2d46f5d8"
+license = "Apache-2.0"
+
+[chronos.bolt-base]
+repo = "amazon/chronos-bolt-base"
+revision = "5d9f166d69f47aef3401367a7b842e78fe97b121"
+license = "Apache-2.0"
+
+[chronos.t5-tiny]
+repo = "amazon/chronos-t5-tiny"
+revision = "29d808298f1a62493e7b9a5e08529d0d930fa189"
+license = "Apache-2.0"
+
+[chronos.t5-mini]
+repo = "amazon/chronos-t5-mini"
+revision = "bd6a4fde8403b8469acd0abd52852b29dbe61c7b"
+license = "Apache-2.0"
+
+[chronos.t5-small]
+repo = "amazon/chronos-t5-small"
+revision = "a971ba21945c4f1796b17a91fe69214b5f4ad472"
+license = "Apache-2.0"
+
+[chronos.t5-base]
+repo = "amazon/chronos-t5-base"
+revision = "ad294eaacead15db499b740ea4122266dd2a81a2"
+license = "Apache-2.0"
+
+[chronos.t5-large]
+repo = "amazon/chronos-t5-large"
+revision = "0e46c9c7e2e9f74b53db0617fdfcfe42a413e54a"
+license = "Apache-2.0"
+
+[timesfm."3.0"]
+repo = "google/timesfm-3.0-pytorch"
+revision = "43046b85ec22d584a13f8098c2ed39c889e129c2"
+license = "timesfm-non-commercial-license-v1.0 (non-commercial, non-production)"
+
+[timesfm."2.5"]
+repo = "google/timesfm-2.5-200m-pytorch"
+revision = "1d952420fba87f3c6dee4f240de0f1a0fbc790e3"
+license = "Apache-2.0"
+
+[tirex.tirex-2]
+repo = "NX-AI/TiRex-2"
+revision = "05e5b26db52bfb256f1ae1bdf785589850482de3"
+license = "Apache-2.0"
+
+[tirex.tirex-2-gifteval-zs]
+repo = "NX-AI/TiRex-2-gifteval-zs"
+revision = "09eff05fbb998a673519f1d59e7203c7304c77d8"
+license = "Apache-2.0"
+
+[tirex.tirex-2-gifteval-pretrain]
+repo = "NX-AI/TiRex-2-gifteval-pretrain"
+revision = "6f0fe5ec3247d55b53ddf78911e3bd52d8d7a4c3"
+license = "Apache-2.0"
+
+[tirex.tirex-1]
+repo = "NX-AI/TiRex"
+revision = "63c740922493f5fbe60b277609ec62babfba2762"
+license = "NXAI Community License (not OSI)"
+
+[tirex."tirex-1.1-gifteval"]
+repo = "NX-AI/TiRex-1.1-gifteval"
+revision = "01b1ebc83a87e82b119f907fe7e43d015db23e9d"
+license = "NXAI Community License (not OSI)"
+
+[toto."2.0-4m"]
+repo = "Datadog/Toto-2.0-4m"
+revision = "8306a9801cf98c0f5ffe4b2dcc8f496e616d84d9"
+license = "Apache-2.0"
+
+[toto."2.0-22m"]
+repo = "Datadog/Toto-2.0-22m"
+revision = "685e4ae3e2be8d8998025e53dd98e7fdcb296a89"
+license = "Apache-2.0"
+
+[toto."2.0-313m"]
+repo = "Datadog/Toto-2.0-313m"
+revision = "a7bab288f5e95f8606f8306f86659357e1c001ef"
+license = "Apache-2.0"
+
+[toto."2.0-1B"]
+repo = "Datadog/Toto-2.0-1B"
+revision = "1604e1a5242884fb9848f88c4ced14f4dc62d9d3"
+license = "Apache-2.0"
+
+[toto."2.0-2.5B"]
+repo = "Datadog/Toto-2.0-2.5B"
+revision = "51a2812bbe449437c01b79c0e425ed578f335f5b"
+license = "Apache-2.0"
+
+[flowstate."r1.1"]
+repo = "ibm-granite/granite-timeseries-flowstate-r1"
+revision = "b80e0f1b1c2d90edebe3d4f243ad046a3f935daa"
+license = "Apache-2.0"
+
+[moment.small]
+repo = "AutonLab/MOMENT-1-small"
+revision = "411e288267f82cce86296dbe4d6c8bc533cc162f"
+license = "MIT"
+
+[moment.base]
+repo = "AutonLab/MOMENT-1-base"
+revision = "5e44b0ea26376a176360f87831124e018f876d96"
+license = "MIT"
+
+[moment.large]
+repo = "AutonLab/MOMENT-1-large"
+revision = "ca58581bc7bea2ebed4e80dc0a3e4b8b609c6ecc"
+license = "MIT"
+
+[timer.sundial-base-128m]
+repo = "thuml/sundial-base-128m"
+revision = "3212e42564493f520593e5414af4367fc4b49226"
+license = "Apache-2.0"
+
+[timer.timer-base-84m]
+repo = "thuml/timer-base-84m"
+revision = "70077a71acce1b4c00d98332fcaabc694255d8e5"
+license = "Apache-2.0"
+
+[moirai."2.0-small"]
+repo = "Salesforce/moirai-2.0-R-small"
+revision = "30f43ff08c8494f4943ae1521e9d4e94a0fbb389"
+license = "CC-BY-NC-4.0"
+
+[moirai."1.1-small"]
+repo = "Salesforce/moirai-1.1-R-small"
+revision = "0c24ab99db2c1a70ea2a0fc03bf113329772ac64"
+license = "CC-BY-NC-4.0"
+
+[moirai."1.1-base"]
+repo = "Salesforce/moirai-1.1-R-base"
+revision = "a0358780de4cdd7ac7963b12ae9985d225d55026"
+license = "CC-BY-NC-4.0"
+
+[moirai."1.1-large"]
+repo = "Salesforce/moirai-1.1-R-large"
+revision = "d144331c5a18e986a9828e7378994b39e209d466"
+license = "CC-BY-NC-4.0"
+
+[moirai."1.0-small"]
+repo = "Salesforce/moirai-1.0-R-small"
+revision = "f5bd5d01f0d67de856107d43abdd637380aae0a3"
+license = "CC-BY-NC-4.0"
+
+[moirai."1.0-base"]
+repo = "Salesforce/moirai-1.0-R-base"
+revision = "4fa939a8800d9da346c0280f3d9aeba0d2d35877"
+license = "CC-BY-NC-4.0"
+
+[moirai."1.0-large"]
+repo = "Salesforce/moirai-1.0-R-large"
+revision = "b6b84e3fbeb9e6927d4271d625441fb51ab6bbd8"
+license = "CC-BY-NC-4.0"
+
+[moirai."moe-small"]
+repo = "Salesforce/moirai-moe-1.0-R-small"
+revision = "deabb2c17d2b5c5a1c13d522473beb29ff354c3f"
+license = "CC-BY-NC-4.0"
+
+[moirai."moe-base"]
+repo = "Salesforce/moirai-moe-1.0-R-base"
+revision = "af123c57cfb02858c599d4e7701dd619a0fc53c0"
+license = "CC-BY-NC-4.0"
