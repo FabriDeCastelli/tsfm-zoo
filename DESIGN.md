@@ -323,7 +323,7 @@ A model is done when:
 3. it has a README row (inputs used, what `z` is, limitations, training corpora);
 4. its patches are listed in `PATCHES.md`.
 
-## Window embeddings and the tgdata evaluation (v0.2.0)
+## Window embeddings and the tgdata evaluation (v0.2.0, v0.3.0)
 
 tgdata (FabriDeCastelli/tgdata, private, pinned tag v0.2.2) is the data and batching base for temporal
 graphs, behind the optional `tgdata` extra.
@@ -336,6 +336,10 @@ graphs, behind the optional `tgdata` extra.
   shape, fingerprint of the readings), the window, normalisation, pooling, dtype and extra `encode`
   inputs. Not the device or batch size. `config.json` holds it in full; runs are written to a temporary
   directory and renamed, so a cache is complete or absent. `load_tsfm` records `model.spec` for this.
+- `tgeval.evaluate_forecast` forecasts the dataset's own test targets zero-shot from a context of any length
+  (the targets never change with it), every node a channel, and scores
+  masked MAE / RMSE / MAPE per step on the original scale, next to a persistence baseline. The TIDES
+  supervised number and the contamination of the model's training corpus are reported with it.
 - tgdata puts batches on the CUDA default device unless told otherwise; every call here passes
   `device="cpu"` for the data, and only the model goes on the GPU chosen with `free-gpu`.
 

@@ -2764,7 +2764,7 @@ wheels = [
 
 [[package]]
 name = "tsfm-zoo"
-version = "0.2.0"
+version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "huggingface-hub", version = "0.36.2", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-8-tsfm-zoo-legacy'" },

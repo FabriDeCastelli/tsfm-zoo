@@ -21,7 +21,7 @@ f = model(x, horizon=48)                         # Forecast: median [B, H, C], q
 `legacy` exists because uni2ts pins gluonts 0.14 / torch 2.4, and
 the Timer/Sundial remote code breaks on transformers 5.
 The `tgdata` extra adds [tgdata](https://github.com/FabriDeCastelli/tgdata) (private; needs GitHub SSH
-access and a Hugging Face login): the datasets for the window embeddings. `.envrc`
+access and a Hugging Face login): the datasets for the window embeddings and the PeMS evaluation. `.envrc`
 points `TGDATA_ROOT` at the copy of the datasets already on this machine, so nothing is downloaded, and
 sets `HF_TOKEN_PATH` because `HF_HOME` hides the default token. TiRex-2 on GPU needs `scripts/setup_cuda.sh`
 once (a CUDA 12.8 compiler for its kernels). `scripts/test_all.sh` runs the CPU tests in every env. `pytest -m repro` runs the GIFT-Eval reproduction on a free GPU.
@@ -44,7 +44,7 @@ captured with a forward hook and the head returns that pass's forecast.
 | TiRex-1 (`tirex:tirex-1`, `tirex-1.1-gifteval`) | `layer` | `[B, C, P, 512]`, patches of 32, context 2048 | no | 1.1-gifteval: within 0.06% | run with `backend="torch"`; the notebook uses the CUDA kernels. With `resample_strategy="frequency"`, `token_span` is None |
 | TiRex-2 (`tirex:tirex-2`, `tirex-2-gifteval-{zs,pretrain}`) | `past_covariates`, `future_covariates`, `channel_groups`, `layer` | `[B, C, N, 512]`: context (2048, NaN-padded) plus future patches, independent of the horizon | yes, variate attention | gifteval-zs, gifteval-pretrain: within 0.72% (GPU, CUDA kernels) | the CUDA kernels are JIT-built on first use and need `scripts/setup_cuda.sh` (CUDA 12.8 toolkit); GPU runs in bf16, so GPU and CPU forecasts differ by ~0.1%; trend differencing reads the full history, so truncation changes `z` |
 | Toto 2.0 (`toto:2.0-{4m,22m,313m,1B,2.5B}`) | `past_covariates`, `future_covariates`, `channel_groups`, `layer` | `[B, C, P+F, D]`, context patches of 32 plus one token per future patch; D = 256/512/1024/1536 (4m…1B) | yes, variate attention | 4m, 22m, 313m, 1B: exact (2.5B not run) | the context is `4096 − (ceil(H/32)−1)·32`, so `z` depends on the horizon |
-| FlowState (`flowstate:r1.1`) | one of `freq`, `timestamps`, `scale_factor` | `[B, C, 1, 512]`: the S5 state after the last context step | no | exact | needs the time scale; context is `4096 / scale_factor` steps; one token, so no per-patch features |
+| FlowState (`flowstate:r1.1`) | one of `freq`, `timestamps`, `scale_factor` | `[B, C, 1, 512]`: the S5 state after the last context step | no | exact | needs the time scale; context is `4096 / scale_factor` steps; one token, so no per-patch features; a series with fewer than 2 usable steps (upstream crashes on them) is forecast from an all-zero history, with a warning |
 | MOMENT (`moment:{small,base,large}`) | `layer` | `[B, C, 64, D]`, 64 patches of 8 over a fixed 512-step window; D = 512/768/1024 | no | no forecast (head must be trained); ETTh1 zero-shot imputation MSE 0.4024 vs the paper's 0.402 (large) | native task is `reconstruct`; longer inputs are truncated to 512 steps |
 | Sundial (`timer:sundial-base-128m`) | `layer`, `num_samples` | `[B, C, P, 768]`, patches of 16 over the last 2880 steps | no | within 0.7%, except m4 CRPS −2.4% (sampled) | runs in `legacy` (transformers 4.40) |
 | Timer (`timer:timer-base-84m`) | `layer` | `[B, C, P, 1024]`, patches of 96 over the last 2880 steps | no | no leaderboard entry | point forecast only (no quantiles) |
@@ -111,3 +111,19 @@ train = cache.rows(g.task(split="train", device="cpu"))                 # one ro
 
 `python examples/embed_windows.py --model flowstate:r1.1 --dataset pems08 --window 12` does the same
 from the command line. Only datasets with one channel per node are supported (PeMS flow).
+
+## PeMS evaluation
+
+`python examples/eval_pems08.py --model flowstate:r1.1 --windows 12 512` scores the model zero-shot on
+the test targets of tgdata's `pems08` (12 steps, one hour, after each test window), with every node a
+channel, and prints masked MAE, RMSE and MAPE at 15, 30 and 60 minutes and averaged over the 12 steps
+(raw scale; unobserved readings are masked in the input and left out of the metrics). The targets are
+the dataset's own whatever the context length, which only reaches further back, so contexts are scored
+on the same windows. A persistence baseline (the last observed value) runs on the same windows, and the
+TIDES supervised MAE from the paper table is printed as the reference. `tsfm_zoo.tgeval.evaluate_forecast`
+is the reusable part.
+
+The context length dominates on PeMS: with 12 steps (the benchmark protocol) a general forecaster
+loses to persistence, with 512 it approaches supervised models. FlowState's training data
+(GIFT-Eval-Pretrain) contains PEMS08, so its numbers are not zero-shot in the strict sense; only
+the Chronos family is clean on PeMS flow.
